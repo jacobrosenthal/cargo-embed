@@ -122,7 +122,7 @@ impl ChannelState {
         self.last_line_done = incoming.chars().last().unwrap() == '\n';
 
         // Then split the entire new contents.
-        for (i, line) in incoming.split_terminator('\n').enumerate() {
+        for (i, line) in incoming.split_inclusive('\n').enumerate() {
             if self.show_timestamps && (last_line_done || i > 0) {
                 let ts = now.format("%H:%M:%S%.3f");
                 self.messages.push(format!("{} {}", ts, line));

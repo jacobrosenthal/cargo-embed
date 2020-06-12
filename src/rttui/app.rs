@@ -10,7 +10,7 @@ use tui::{
     backend::TermionBackend,
     layout::{Constraint, Direction, Layout},
     style::{Color, Modifier, Style},
-    widgets::{Block, Borders, List, Paragraph, Tabs, Text},
+    widgets::{Block, Borders, Paragraph, Tabs, Text},
     Terminal,
 };
 use unicode_width::UnicodeWidthStr;
@@ -150,13 +150,19 @@ impl App {
 
                 height = chunks[1].height as usize;
 
-                let messages = messages
+                //expected enum `tui::widgets::Text`, found `&tui::widgets::Text<'_>`
+                let messages: Vec<Text> = messages
                     .iter()
                     .map(|m| Text::raw(m))
                     .skip(message_num - (height + scroll_offset).min(message_num))
-                    .take(height);
-                let mut messages =
-                    List::new(messages).block(Block::default().borders(Borders::NONE));
+                    .take(height)
+                    .collect();
+
+                //seemingly can only have 1 paragraph per render? ideally we could have 1 graph per timestamp i think
+                let mut messages = Paragraph::new(messages.iter())
+                    .block(Block::default().borders(Borders::NONE))
+                    .wrap(true);
+
                 f.render(&mut messages, chunks[1]);
 
                 if has_down_channel {

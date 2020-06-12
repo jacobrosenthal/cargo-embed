@@ -1,3 +1,4 @@
+#![feature(split_inclusive)]
 mod config;
 mod error;
 mod helpers;
